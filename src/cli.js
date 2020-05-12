@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 require('..').run()
-  .catch(error => {
-    console.error(error);
+  .catch(_error => {
     process.exitCode = 1;
   })

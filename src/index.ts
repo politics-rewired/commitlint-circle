@@ -80,7 +80,7 @@ const getRangeFromGit = async () => {
 const lint = ([from, to]: string[]) =>
     execa(
         'node',
-        [require('@commitlint/cli'), '--from', from, '--to', to],
+        [require('@commitlint/cli'), '--from', from, '--to', to, '-V'],
         {stdio: 'inherit'}
     )
 
