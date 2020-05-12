@@ -9,7 +9,7 @@ for a given change/build combination.
 ## Getting started
 
 ```
-yarn add commitlint-circle --dev
+yarn add @timbeyer/commitlint-circle --dev
 ```
 
 ```yml
