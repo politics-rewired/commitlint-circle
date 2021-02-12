@@ -2,14 +2,12 @@
 
 # commitlint-circle
 
-This package is a convenience wrapper around `commitlint`, 
-providing zero-configuration linting of all relevant commits
-for a given change/build combination.
+This package is a convenience wrapper around `commitlint`, providing zero-configuration linting of all relevant commits for a given change/build combination.
 
 ## Getting started
 
-```
-yarn add @timbeyer/commitlint-circle --dev
+```sh
+yarn add @rewired/commitlint-circle --dev
 ```
 
 ```yml
