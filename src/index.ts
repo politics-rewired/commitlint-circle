@@ -3,7 +3,7 @@ import execa from 'execa'
 
 const NotFound = new Error()
 
-const git = (...args: string[]) => execa.stdout('git', args)
+const git = (...args: string[]) => execa.sync('git', args).stdout
 
 const checkCommit = async (...refs: string[]) =>
     Promise.all(
