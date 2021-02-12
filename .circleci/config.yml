@@ -1,10 +1,13 @@
 version: 2
+
 jobs:
   build:
     docker:
-      - image: circleci/node:8
+      - image: circleci/node:12
+
     steps:
       - checkout
+
       - restore_cache:
           key: deps-{{ checksum "yarn.lock" }}
       - run:
@@ -14,9 +17,11 @@ jobs:
           key: deps-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
+
       - run:
           name: Build
           command: yarn build
+
       - run:
           name: Lint commits
           command: ./src/cli.js
