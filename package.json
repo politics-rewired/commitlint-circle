@@ -26,7 +26,7 @@
     "@commitlint/cli": ">=9 <12"
   },
   "dependencies": {
-    "@octokit/rest": "^15.9.4",
+    "@octokit/rest": "^18.1.0",
     "execa": "^0.10.0",
     "tslib": "^1.9.3"
   },

@@ -1,4 +1,4 @@
-import Octokit from '@octokit/rest'
+import { Octokit } from '@octokit/rest'
 import execa from 'execa'
 
 const NotFound = new Error()
@@ -30,13 +30,11 @@ const matchGithub = <T>(url: string | undefined, prop: string) => {
 
 const getRangeFromPr = async () => {
     const {owner, repo, data: pull} = matchGithub(process.env['CIRCLE_PULL_REQUEST'], 'pull')
-    const github = new Octokit()
-    if (process.env.GITHUB_TOKEN)
-        github.authenticate({ type: 'token', token: process.env.GITHUB_TOKEN || '' })
+    const github = new Octokit({ auth: process.env.GITHUB_TOKEN || '' });
     
     console.log('📡   Looking up PR #%s...', pull)
-    const {data: {base, head}} = await github.pullRequests.get(
-        {owner, repo, number: +pull}
+    const {data: {base, head}} = await github.pulls.get(
+        {owner, repo, pull_number: +pull}
     )
 
     await checkCommit(base.sha, head.sha)
