@@ -19,8 +19,11 @@
     "src"
   ],
   "scripts": {
+    "postinstall": "husky install",
+    "prepublishOnly": "pinst --disable",
+    "postpublish": "pinst --enable",
     "build": "tsc",
-    "commitmsg": "commitlint -E GIT_PARAMS"
+    "release": "standard-version"
   },
   "peerDependencies": {
     "@commitlint/cli": ">=9 <12"
@@ -35,12 +38,25 @@
     "@commitlint/config-conventional": "^11.0.0",
     "@types/execa": "^2.0.0",
     "@types/node": "^14.14.27",
-    "husky": "^0.14.3",
+    "@typescript-eslint/eslint-plugin": "^4.15.0",
+    "@typescript-eslint/parser": "^4.15.0",
+    "eslint": "^7.19.0",
+    "husky": "^5.0.9",
+    "lint-staged": "^10.5.4",
+    "pinst": "^2.1.4",
+    "prettier": "^2.2.1",
+    "standard-version": "^9.1.0",
     "typescript": "^4.1.5"
   },
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
+    ]
+  },
+  "lint-staged": {
+    "./**/*.{js,ts}": [
+      "eslint --fix",
+      "prettier --write"
     ]
   }
 }
