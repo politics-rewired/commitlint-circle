@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "target": "es3",
-        "outDir": "build",
+        "outDir": "dist",
         "esModuleInterop": true,
         "sourceMap": true,
         "declaration": true,

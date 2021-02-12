@@ -1,8 +1,8 @@
 {
   "name": "@rewired/commitlint-circle",
   "version": "3.1.0",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "bin": "src/cli.js",
   "author": "Fathy Boundjadj <fathy.boundjadj@gmail.com>",
   "contributors": [
@@ -15,7 +15,7 @@
   "description": "Lint all relevant commits for a change or PR on Circle CI",
   "license": "MIT",
   "files": [
-    "build",
+    "dist",
     "src"
   ],
   "scripts": {
