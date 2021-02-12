@@ -1,10 +1,17 @@
 {
-  "name": "@timbeyer/commitlint-circle",
-  "version": "3.0.0",
+  "name": "@rewired/commitlint-circle",
+  "version": "3.1.0",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "bin": "src/cli.js",
   "author": "Fathy Boundjadj <fathy.boundjadj@gmail.com>",
+  "contributors": [
+    {
+      "name": "Benjamin Chrobot",
+      "email": "benjamin.chrobot@alum.mit.edu",
+      "url": "https://benjaminchrobot.com"
+    }
+  ],
   "description": "Lint all relevant commits for a change or PR on Circle CI",
   "license": "MIT",
   "files": [
