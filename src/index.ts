@@ -1,90 +1,92 @@
-import { Octokit } from '@octokit/rest'
-import execa from 'execa'
+import { Octokit } from "@octokit/rest";
+import execa from "execa";
 
-const NotFound = new Error()
+const NotFound = new Error();
 
-const git = (...args: string[]) => execa.sync('git', args).stdout
+const git = (...args: string[]) => execa.sync("git", args).stdout;
 
 const checkCommit = async (...refs: string[]) =>
-    Promise.all(
-        refs.map(ref =>
-            git('cat-file', '-e', ref)
-        )
-    )
+  Promise.all(refs.map((ref) => git("cat-file", "-e", ref)));
 
-const matchGithub = <T>(url: string | undefined, prop: string) => {
-    if(!url) {
-        throw NotFound
-    }
+const matchGithub = (url: string | undefined, prop: string) => {
+  if (!url) {
+    throw NotFound;
+  }
 
-    const match = url.match(new RegExp(`github\\.com/(.+)/(.+)/${prop}/(.+)`))
+  const match = url.match(new RegExp(`github\\.com/(.+)/(.+)/${prop}/(.+)`));
 
-    if(!match) {
-        throw NotFound
-    }
+  if (!match) {
+    throw NotFound;
+  }
 
-    const [_, owner, repo, data] = match
+  const [_, owner, repo, data] = match;
 
-    return {owner, repo, data}
-}
+  return { owner, repo, data };
+};
 
 const getRangeFromPr = async () => {
-    const {owner, repo, data: pull} = matchGithub(process.env['CIRCLE_PULL_REQUEST'], 'pull')
-    const github = new Octokit({ auth: process.env.GITHUB_TOKEN || '' });
-    
-    console.log('📡   Looking up PR #%s...', pull)
-    const {data: {base, head}} = await github.pulls.get(
-        {owner, repo, pull_number: +pull}
-    )
+  const { owner, repo, data: pull } = matchGithub(
+    process.env["CIRCLE_PULL_REQUEST"],
+    "pull"
+  );
+  const github = new Octokit({ auth: process.env.GITHUB_TOKEN || "" });
 
-    await checkCommit(base.sha, head.sha)
-    
-    console.log('🔀   Linting PR #%s', pull)
+  console.log("📡   Looking up PR #%s...", pull);
+  const {
+    data: { base, head },
+  } = await github.pulls.get({ owner, repo, pull_number: +pull });
 
-    return [base.sha, head.sha]
-}
+  await checkCommit(base.sha, head.sha);
+
+  console.log("🔀   Linting PR #%s", pull);
+
+  return [base.sha, head.sha];
+};
 
 const getRangeFromCompare = async () => {
-    const [from, to] = matchGithub(process.env['CIRCLE_COMPARE_URL'], 'compare').data.split('...')
-    
-    await checkCommit(from, to)
-    console.log('🎏   Linting using comparison URL %s...%s', from, to) 
-    
-    return [from, to]
-}
+  const [from, to] = matchGithub(
+    process.env["CIRCLE_COMPARE_URL"],
+    "compare"
+  ).data.split("...");
+
+  await checkCommit(from, to);
+  console.log("🎏   Linting using comparison URL %s...%s", from, to);
+
+  return [from, to];
+};
 
 const getRangeFromSha = async () => {
-    const sha = process.env['CIRCLE_SHA1']
+  const sha = process.env["CIRCLE_SHA1"];
 
-    if(!sha) {
-        throw new Error('Cannot find CIRCLE_SHA1 environment variable')
-    }
+  if (!sha) {
+    throw new Error("Cannot find CIRCLE_SHA1 environment variable");
+  }
 
-    await checkCommit(sha)
-    console.log('⚙️   Linting using CIRCLE_SHA1 (%s)', sha)
-    
-    return ['origin/master', sha]
-}
+  await checkCommit(sha);
+  console.log("⚙️   Linting using CIRCLE_SHA1 (%s)", sha);
+
+  return ["origin/master", sha];
+};
 
 const getRangeFromGit = async () => {
-    const head = await git('rev-parse', '--verify', 'HEAD')
+  const head = await git("rev-parse", "--verify", "HEAD");
 
-    await checkCommit(head)
-    console.log('⚙️   Linting using git HEAD (%s)', head)
+  await checkCommit(head);
+  console.log("⚙️   Linting using git HEAD (%s)", head);
 
-    return ['origin/master', head]
-}
+  return ["origin/master", head];
+};
 
 const lint = ([from, to]: string[]) =>
-    execa(
-        'node',
-        [require('@commitlint/cli'), '--from', from, '--to', to, '-V'],
-        {stdio: 'inherit'}
-    )
+  execa(
+    "node",
+    [require("@commitlint/cli"), "--from", from, "--to", to, "-V"],
+    { stdio: "inherit" }
+  );
 
-export const run = () =>
-    getRangeFromPr()
-        .catch(getRangeFromCompare)
-        .catch(getRangeFromSha)
-        .catch(getRangeFromGit)
-        .then(lint)
+export const run = (): Promise<unknown> =>
+  getRangeFromPr()
+    .catch(getRangeFromCompare)
+    .catch(getRangeFromSha)
+    .catch(getRangeFromGit)
+    .then(lint);
